@@ -1,79 +1,76 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
-const data = {
-  states: [
-    {
-      name: "Madhya Pradesh",
-      description: "A central Indian state with rich cultural heritage.",
-      cities: [
-        {
-          name: "Indore",
-          description: "The cleanest city of India.",
-          landmarks: [
-            { name: "Rajwada", description: "A historic palace in Indore." },
-            { name: "Sarafa Bazaar", description: "Famous food street." },
-          ],
-        },
-        {
-          name: "Bhopal",
-          description: "The city of lakes.",
-          landmarks: [
-            { name: "Taj-ul-Masajid", description: "One of the largest mosques in India." },
-            { name: "Van Vihar", description: "A national park in Bhopal." },
-          ],
-        },
-      ],
-    },
-    {
-      name: "Maharashtra",
-      description: "A western Indian state known for Mumbai and Pune.",
-      cities: [
-        {
-          name: "Mumbai",
-          description: "The financial capital of India.",
-          landmarks: [
-            { name: "Gateway of India", description: "A historic monument in Mumbai." },
-            { name: "Marine Drive", description: "A beautiful coastline road." },
-          ],
-        },
-        {
-          name: "Pune",
-          description: "An educational hub of India.",
-          landmarks: [
-            { name: "Shaniwar Wada", description: "A historical fortification." },
-            { name: "Aga Khan Palace", description: "A historical palace." },
-          ],
-        },
-      ],
-    },
-  ],
-};
+const data = [
+  {
+    name: "Madhya Pradesh",
+    description: "A central Indian state known for historical sites.",
+    cities: [
+      {
+        name: "Indore",
+        description: "Commercial capital of Madhya Pradesh.",
+        landmarks: [
+          { name: "Rajwada", description: "Historical palace in Indore." },
+          { name: "Sarafa Bazaar", description: "Famous food market." },
+        ],
+      },
+      {
+        name: "Bhopal",
+        description: "The capital city of Madhya Pradesh.",
+        landmarks: [
+          { name: "Taj-ul-Masjid", description: "One of India's largest mosques." },
+          { name: "Upper Lake", description: "A beautiful lake in Bhopal." },
+        ],
+      },
+    ],
+  },
+  {
+    name: "Maharashtra",
+    description: "A western Indian state, home to Mumbai.",
+    cities: [
+      {
+        name: "Mumbai",
+        description: "Financial capital of India.",
+        landmarks: [
+          { name: "Gateway of India", description: "Iconic monument of Mumbai." },
+          { name: "Marine Drive", description: "Scenic coastal road." },
+        ],
+      },
+      {
+        name: "Pune",
+        description: "Known for educational institutions.",
+        landmarks: [
+          { name: "Shaniwar Wada", description: "Historical fort in Pune." },
+          { name: "Aga Khan Palace", description: "Famous for Gandhi's imprisonment." },
+        ],
+      },
+    ],
+  },
+];
 
-const App = () => {
-  const [selectedStateIndex, setSelectedStateIndex] = useState(0);
-  const [selectedCityIndex, setSelectedCityIndex] = useState(0);
-  const [selectedLandmarkIndex, setSelectedLandmarkIndex] = useState(0);
+function App() {
+  const [stateIndex, setStateIndex] = useState(0);
+  const [cityIndex, setCityIndex] = useState(0);
+  const [landmarkIndex, setLandmarkIndex] = useState(0);
 
-  const selectedState = data.states[selectedStateIndex];
-  const selectedCity = selectedState.cities[selectedCityIndex];
-  const selectedLandmark = selectedCity.landmarks[selectedLandmarkIndex];
+  useEffect(() => {
+    setCityIndex(0);
+    setLandmarkIndex(0);
+  }, [stateIndex]);
+
+  useEffect(() => {
+    setLandmarkIndex(0);
+  }, [cityIndex]);
+
+  const selectedState = data[stateIndex];
+  const selectedCity = selectedState.cities[cityIndex];
+  const selectedLandmark = selectedCity.landmarks[landmarkIndex];
 
   return (
     <div>
-      <h2>Dynamic Dropdown Example</h2>
-
       {/* State Dropdown */}
-      <label>State: </label>
-      <select
-        id="state"
-        value={selectedStateIndex}
-        onChange={(e) => {
-          setSelectedStateIndex(e.target.value);
-          setSelectedCityIndex(0); // Reset city when state changes
-          setSelectedLandmarkIndex(0); // Reset landmark when city changes
-        }}
-      >
-        {data.states.map((state, index) => (
+      <label htmlFor="state">Select State:</label>
+      <select id="state" value={stateIndex} onChange={(e) => setStateIndex(Number(e.target.value))}>
+        {data.map((state, index) => (
           <option key={index} value={index}>
             {state.name}
           </option>
@@ -81,15 +78,8 @@ const App = () => {
       </select>
 
       {/* City Dropdown */}
-      <label>City: </label>
-      <select
-        id="city"
-        value={selectedCityIndex}
-        onChange={(e) => {
-          setSelectedCityIndex(e.target.value);
-          setSelectedLandmarkIndex(0); // Reset landmark when city changes
-        }}
-      >
+      <label htmlFor="city">Select City:</label>
+      <select id="city" value={cityIndex} onChange={(e) => setCityIndex(Number(e.target.value))}>
         {selectedState.cities.map((city, index) => (
           <option key={index} value={index}>
             {city.name}
@@ -98,12 +88,8 @@ const App = () => {
       </select>
 
       {/* Landmark Dropdown */}
-      <label>Landmark: </label>
-      <select
-        id="landmark"
-        value={selectedLandmarkIndex}
-        onChange={(e) => setSelectedLandmarkIndex(e.target.value)}
-      >
+      <label htmlFor="landmark">Select Landmark:</label>
+      <select id="landmark" value={landmarkIndex} onChange={(e) => setLandmarkIndex(Number(e.target.value))}>
         {selectedCity.landmarks.map((landmark, index) => (
           <option key={index} value={index}>
             {landmark.name}
@@ -111,20 +97,17 @@ const App = () => {
         ))}
       </select>
 
-      {/* Display Selected Info */}
-      <div>
-        <h3>Selected Information:</h3>
-        <p id="state-name"><strong>State:</strong> {selectedState.name}</p>
-        <p id="state-description">{selectedState.description}</p>
-        
-        <p id="city-name"><strong>City:</strong> {selectedCity.name}</p>
-        <p id="city-description">{selectedCity.description}</p>
+      {/* Display Selected Data */}
+      <div id="state-name"><strong>State:</strong> {selectedState.name}</div>
+      <div id="state-description">{selectedState.description}</div>
 
-        <p id="landmark-name"><strong>Landmark:</strong> {selectedLandmark.name}</p>
-        <p id="landmark-description">{selectedLandmark.description}</p>
-      </div>
+      <div id="city-name"><strong>City:</strong> {selectedCity.name}</div>
+      <div id="city-description">{selectedCity.description}</div>
+
+      <div id="landmark-name"><strong>Landmark:</strong> {selectedLandmark.name}</div>
+      <div id="landmark-description">{selectedLandmark.description}</div>
     </div>
   );
-};
+}
 
 export default App;
