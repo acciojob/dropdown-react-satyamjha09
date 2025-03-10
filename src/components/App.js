@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "../styles/App.css"
+import "../styles/App.css";
 
 const App = () => {
   // Data for states, cities, and landmarks
