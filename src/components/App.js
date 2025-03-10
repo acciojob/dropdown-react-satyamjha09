@@ -1,111 +1,100 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from 'react';
+import Card from './Card';
 
-const data = [
+const list = [
   {
     name: "Madhya Pradesh",
-    description: "A central Indian state known for historical sites.",
+    description: "Heart of India",
     cities: [
       {
         name: "Indore",
-        description: "Commercial capital of Madhya Pradesh.",
+        description: "Cleanest city",
         landmarks: [
-          { name: "Rajwada", description: "Historical palace in Indore." },
-          { name: "Sarafa Bazaar", description: "Famous food market." },
-        ],
+          { name: "Rajwada", description: "Historical palace" },
+          { name: "Lal Bagh Palace", description: "Royal residence" }
+        ]
       },
       {
         name: "Bhopal",
-        description: "The capital city of Madhya Pradesh.",
+        description: "City of Lakes",
         landmarks: [
-          { name: "Taj-ul-Masjid", description: "One of India's largest mosques." },
-          { name: "Upper Lake", description: "A beautiful lake in Bhopal." },
-        ],
-      },
-    ],
+          { name: "Upper Lake", description: "Large artificial lake" },
+          { name: "Taj-ul-Masajid", description: "Mosque with white domes" }
+        ]
+      }
+    ]
   },
   {
     name: "Maharashtra",
-    description: "A western Indian state, home to Mumbai.",
+    description: "Economic hub of India",
     cities: [
       {
         name: "Mumbai",
-        description: "Financial capital of India.",
+        description: "Financial capital",
         landmarks: [
-          { name: "Gateway of India", description: "Iconic monument of Mumbai." },
-          { name: "Marine Drive", description: "Scenic coastal road." },
-        ],
+          { name: "Gateway of India", description: "Historic monument" },
+          { name: "Marine Drive", description: "Scenic coastline" }
+        ]
       },
       {
         name: "Pune",
-        description: "Known for educational institutions.",
+        description: "Cultural capital",
         landmarks: [
-          { name: "Shaniwar Wada", description: "Historical fort in Pune." },
-          { name: "Aga Khan Palace", description: "Famous for Gandhi's imprisonment." },
-        ],
-      },
-    ],
-  },
+          { name: "Shaniwar Wada", description: "Historical fortification" },
+          { name: "Aga Khan Palace", description: "Historical palace" }
+        ]
+      }
+    ]
+  }
 ];
 
 function App() {
-  const [stateIndex, setStateIndex] = useState(0);
-  const [cityIndex, setCityIndex] = useState(0);
-  const [landmarkIndex, setLandmarkIndex] = useState(0);
+  const [selectedState, setSelectedState] = useState(0);
+  const [selectedCity, setSelectedCity] = useState(0);
+  const [selectedLandmark, setSelectedLandmark] = useState(0);
 
-  useEffect(() => {
-    setCityIndex(0);
-    setLandmarkIndex(0);
-  }, [stateIndex]);
+  const currentState = list[selectedState];
+  const currentCity = currentState.cities[selectedCity];
+  const currentLandmark = currentCity.landmarks[selectedLandmark];
 
-  useEffect(() => {
-    setLandmarkIndex(0);
-  }, [cityIndex]);
+  const handleStateChange = (e) => {
+    setSelectedState(Number(e.target.value));
+    setSelectedCity(0);
+    setSelectedLandmark(0);
+  };
 
-  const selectedState = data[stateIndex];
-  const selectedCity = selectedState.cities[cityIndex];
-  const selectedLandmark = selectedCity.landmarks[landmarkIndex];
+  const handleCityChange = (e) => {
+    setSelectedCity(Number(e.target.value));
+    setSelectedLandmark(0);
+  };
+
+  const handleLandmarkChange = (e) => {
+    setSelectedLandmark(Number(e.target.value));
+  };
 
   return (
-    <div>
-      {/* State Dropdown */}
-      <label htmlFor="state">Select State:</label>
-      <select id="state" value={stateIndex} onChange={(e) => setStateIndex(Number(e.target.value))}>
-        {data.map((state, index) => (
-          <option key={index} value={index}>
-            {state.name}
-          </option>
+    <div className="App">
+      <select id="state" value={selectedState} onChange={handleStateChange}>
+        {list.map((state, index) => (
+          <option key={index} value={index}>{state.name}</option>
         ))}
       </select>
 
-      {/* City Dropdown */}
-      <label htmlFor="city">Select City:</label>
-      <select id="city" value={cityIndex} onChange={(e) => setCityIndex(Number(e.target.value))}>
-        {selectedState.cities.map((city, index) => (
-          <option key={index} value={index}>
-            {city.name}
-          </option>
+      <select id="city" value={selectedCity} onChange={handleCityChange}>
+        {currentState.cities.map((city, index) => (
+          <option key={index} value={index}>{city.name}</option>
         ))}
       </select>
 
-      {/* Landmark Dropdown */}
-      <label htmlFor="landmark">Select Landmark:</label>
-      <select id="landmark" value={landmarkIndex} onChange={(e) => setLandmarkIndex(Number(e.target.value))}>
-        {selectedCity.landmarks.map((landmark, index) => (
-          <option key={index} value={index}>
-            {landmark.name}
-          </option>
+      <select id="landmark" value={selectedLandmark} onChange={handleLandmarkChange}>
+        {currentCity.landmarks.map((landmark, index) => (
+          <option key={index} value={index}>{landmark.name}</option>
         ))}
       </select>
 
-      {/* Display Selected Data */}
-      <div id="state-name"><strong>State:</strong> {selectedState.name}</div>
-      <div id="state-description">{selectedState.description}</div>
-
-      <div id="city-name"><strong>City:</strong> {selectedCity.name}</div>
-      <div id="city-description">{selectedCity.description}</div>
-
-      <div id="landmark-name"><strong>Landmark:</strong> {selectedLandmark.name}</div>
-      <div id="landmark-description">{selectedLandmark.description}</div>
+      <Card item={currentState} prefix="state" />
+      <Card item={currentCity} prefix="city" />
+      <Card item={currentLandmark} prefix="landmark" />
     </div>
   );
 }
